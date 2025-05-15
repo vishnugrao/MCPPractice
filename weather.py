@@ -60,13 +60,13 @@ async def get_forecast(latitude: float, longitude: float) -> str:
     """
 
     points_url = f"{NWS_API_BASE}/points/{latitude},{longitude}"
-    points_data = make_nws_request(points_url)
+    points_data = await make_nws_request(points_url)
 
     if not points_data:
         return "Unable to fetch forecast data for this location"
 
     forecast_url = points_data['properties']['forecast']
-    forecast_data = make_nws_request(forecast_url)
+    forecast_data = await make_nws_request(forecast_url)
 
     if not forecast_data:
         return "Unable to fetch detailed forecast."
@@ -75,7 +75,7 @@ async def get_forecast(latitude: float, longitude: float) -> str:
     forecasts = []
 
     for period in periods[:5]: # Include only the next 5 periods
-        forecast = """
+        forecast = f"""
 {period['name']}: 
 Temperature: {period['temperature']}°{period['temperatureUnit']}
 Wind: {period['windSpeed']} {period['windDirection']}
@@ -88,7 +88,7 @@ Forecast: {period['detailedForecast']}
 if __name__ == "__main__":
     mcp.run(transport="stdio")
 
-    
+
 
 
 
